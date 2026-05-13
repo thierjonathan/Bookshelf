@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres:16
+    container_name: bookshelf-db
+    environment:
+      POSTGRES_DB: bookshelf
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+    container_name: bookshelf-backend
+    depends_on:
+      - db
+    ports:
+      - "8082:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/bookshelf
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+
+volumes:
+  db_data:
